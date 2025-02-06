@@ -1,34 +1,55 @@
-import {Body, Controller, Delete, Get, Param, Post, Put} from '@nestjs/common';
-import {UsersService} from "./users.service";
-import {Prisma} from "@prisma/client";
-import {CreateUserDto} from "./dto/create-user.dto";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
+import { UsersService } from './users.service';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UserWithoutPassword } from './users.type';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UserExistsGuard } from './guards/user-exists.guard';
 
 @Controller('users')
 export class UsersController {
-    constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) {}
 
-    @Get()
-    async getUsers(){
-        return this.usersService.getUsers();
-    }
+  @Post()
+  async create(
+    @Body() createUserDto: CreateUserDto,
+  ): Promise<UserWithoutPassword> {
+    return this.usersService.create(createUserDto);
+  }
 
-    @Get(':id')
-    async getUserById(@Param('id') id: string){
-        return this.usersService.getUserById(id);
-    }
+  @Get()
+  async findAll(): Promise<UserWithoutPassword[]> {
+    return this.usersService.findAll();
+  }
 
-    @Post()
-    async createUser(@Body() data: CreateUserDto){
-        return this.usersService.createUser(data);
-    }
+  @Get(':userId')
+  async findOneById(
+    @Param('userId') userId: string,
+  ): Promise<UserWithoutPassword | null> {
+    return this.usersService.findOneById(userId);
+  }
 
-    @Put(':id')
-    async updateUser(@Param('id') id: string, @Body() data: Prisma.UserUpdateInput){
-        return this.usersService.updateUser(id, data);
-    }
+  @Patch(':userId')
+  @UseGuards(UserExistsGuard)
+  async update(
+    @Param('userId') userId: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<UserWithoutPassword> {
+    return this.usersService.update(userId, updateUserDto);
+  }
 
-    @Delete(':id')
-    async deleteUser(@Param('id') id: string){
-        return this.usersService.deleteUser(id);
-    }
+  @Delete(':userId')
+  @UseGuards(UserExistsGuard)
+  async remove(@Param('userId') userId: string): Promise<UserWithoutPassword> {
+    return this.usersService.remove(userId);
+  }
 }
