@@ -1,17 +1,17 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../common/prisma.service';
-import { hash } from 'bcrypt';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { UserWithoutPassword } from './users.type';
-import { NOT_FOUND_ERRORS } from '../common/common.types';
+import { Injectable, NotFoundException } from '@nestjs/common'
+import { PrismaService } from '../common/prisma.service'
+import { hash } from 'bcrypt'
+import { CreateUserDto } from './dto/create-user.dto'
+import { UpdateUserDto } from './dto/update-user.dto'
+import { USERs_ERROR, UserWithoutPassword } from './users.type'
+import { User } from '@prisma/client'
 
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createUserPayload: CreateUserDto): Promise<UserWithoutPassword> {
-    const hashedPassword = await hash(createUserPayload.password, 10);
+    const hashedPassword = await hash(createUserPayload.password, 10)
     return this.prisma.user.create({
       data: {
         ...createUserPayload,
@@ -20,7 +20,7 @@ export class UsersService {
       omit: {
         password: true,
       },
-    });
+    })
   }
 
   findAll(): Promise<UserWithoutPassword[]> {
@@ -28,7 +28,7 @@ export class UsersService {
       omit: {
         password: true,
       },
-    });
+    })
   }
 
   async findOneById(userId: string): Promise<UserWithoutPassword> {
@@ -39,12 +39,25 @@ export class UsersService {
       omit: {
         password: true,
       },
-    });
+    })
 
     if (!user) {
-      throw new NotFoundException(NOT_FOUND_ERRORS.USER);
+      throw new NotFoundException(USERs_ERROR.NOT_FOUND_BY_ID)
     }
-    return user;
+    return user
+  }
+
+  async findOneByEmail(email: string): Promise<User> {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email,
+      },
+    })
+
+    if (!user) {
+      throw new NotFoundException(USERs_ERROR.NOT_FOUND_BY_EMAIL)
+    }
+    return user
   }
 
   async update(
@@ -59,7 +72,7 @@ export class UsersService {
         password: true,
       },
       data: updateUserPayload,
-    });
+    })
   }
 
   async remove(userId: string): Promise<UserWithoutPassword> {
@@ -70,6 +83,6 @@ export class UsersService {
       omit: {
         password: true,
       },
-    });
+    })
   }
 }

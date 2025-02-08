@@ -1,4 +1,3 @@
-export const enum NOT_FOUND_ERRORS {
-  USER = 'User not found',
-  TODO = 'Todo not found',
+export const enum COMMON_ERRORS {
+  INTERNAL_SERVER_ERROR = 'Internal server error',
 }

@@ -1,44 +1,30 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../common/prisma.service';
-import { AuthBody } from './auth.controller';
-import { hash, compare } from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
+import { BadRequestException, Injectable } from '@nestjs/common'
+import { PrismaService } from '../common/prisma.service'
+import { AuthBody } from './auth.controller'
+import { compare } from 'bcrypt'
+import { JwtService } from '@nestjs/jwt'
+import { UsersService } from '../users/users.service'
+import { AUTH_ERROR, LoginResponse } from './auth.type'
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
+    private readonly usersService: UsersService,
   ) {}
 
-  async validateUser(authBody: AuthBody): Promise<any> {
-    const user = await this.prisma.user.findUnique({
-      where: {
-        email: authBody.email,
-      },
-    });
-
-    if (!user) {
-      return new NotFoundException('User not found');
-    }
-    const isPasswordMatching = await this.isPasswordMatching(
+  async login(authBody: AuthBody): Promise<LoginResponse> {
+    const userFound = await this.usersService.findOneByEmail(authBody.email)
+    const isPasswordMatching = await compare(
       authBody.password,
-      user.password,
-    );
+      userFound.password,
+    )
     if (!isPasswordMatching) {
-      return new NotFoundException('Wrong password');
+      throw new BadRequestException(AUTH_ERROR.WRONG_PASSWORD)
     }
-    return this.authenticateUser(user);
-  }
-
-  private async isPasswordMatching(password: string, hash: string) {
-    return compare(password, hash);
-  }
-
-  private authenticateUser(user: any) {
-    const payload = { userId: user.id, email: user.email };
+    const payload = { userId: userFound.id }
     return {
       access_token: this.jwtService.sign(payload),
-    };
+    }
   }
 }

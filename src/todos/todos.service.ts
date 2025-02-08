@@ -1,9 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateTodoDto } from './dto/create-todo.dto';
-import { UpdateTodoDto } from './dto/update-todo.dto';
-import { PrismaService } from '../common/prisma.service';
-import { Todo } from '@prisma/client';
-import { NOT_FOUND_ERRORS } from '../common/common.types';
+import { Injectable, NotFoundException } from '@nestjs/common'
+import { CreateTodoDto } from './dto/create-todo.dto'
+import { UpdateTodoDto } from './dto/update-todo.dto'
+import { PrismaService } from '../common/prisma.service'
+import { Todo } from '@prisma/client'
+import { TODOS_ERROR } from './totos.type'
 
 @Injectable()
 export class TodosService {
@@ -12,11 +12,11 @@ export class TodosService {
   create(createTodoDto: CreateTodoDto): Promise<Todo> {
     return this.prisma.todo.create({
       data: createTodoDto,
-    });
+    })
   }
 
   findAll(): Promise<Todo[]> {
-    return this.prisma.todo.findMany();
+    return this.prisma.todo.findMany()
   }
 
   async findOneById(todoId: string): Promise<Todo> {
@@ -24,11 +24,11 @@ export class TodosService {
       where: {
         id: todoId,
       },
-    });
+    })
     if (!todo) {
-      throw new NotFoundException(NOT_FOUND_ERRORS.TODO);
+      throw new NotFoundException(TODOS_ERROR.NOT_FOUND_BY_ID)
     }
-    return todo;
+    return todo
   }
 
   async update(todoId: string, updateTodoDto: UpdateTodoDto): Promise<Todo> {
@@ -37,7 +37,7 @@ export class TodosService {
         id: todoId,
       },
       data: updateTodoDto,
-    });
+    })
   }
 
   async remove(todoId: string): Promise<Todo> {
@@ -45,6 +45,6 @@ export class TodosService {
       where: {
         id: todoId,
       },
-    });
+    })
   }
 }

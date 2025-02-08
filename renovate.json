@@ -1,0 +1,3 @@
+{
+  "extends": ["github>vfourny/.github:renovate"]
+}
