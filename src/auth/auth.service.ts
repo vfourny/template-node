@@ -1,5 +1,4 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
-import { PrismaService } from '../common/prisma.service'
 import { AuthBody } from './auth.controller'
 import { compare } from 'bcrypt'
 import { JwtService } from '@nestjs/jwt'

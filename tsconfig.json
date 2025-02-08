@@ -1,6 +1,6 @@
 {
   "extends": ["@vfourny/node-toolkit/tsconfig"],
   "compilerOptions": {
-    "experimentalDecorators": true,
+    "experimentalDecorators": true
   }
 }

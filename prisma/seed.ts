@@ -3,11 +3,10 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 async function main() {
-  // Création de quelques utilisateurs avec des tâches
-  const user1 = await prisma.user.create({
+  await prisma.user.create({
     data: {
       email: 'user1@example.com',
-      password: 'password123', // Utiliser un mot de passe sécurisé dans un cas réel
+      password: 'password123',
       todos: {
         create: [
           { title: 'Acheter du pain' },
@@ -17,7 +16,7 @@ async function main() {
     },
   })
 
-  const user2 = await prisma.user.create({
+  await prisma.user.create({
     data: {
       email: 'user2@example.com',
       password: 'password456',
@@ -26,13 +25,10 @@ async function main() {
       },
     },
   })
-
-  console.log('Utilisateurs créés :', user1, user2)
 }
 
 main()
-  .catch((e) => {
-    console.error(e)
+  .catch(() => {
     process.exit(1)
   })
   .finally(async () => {
