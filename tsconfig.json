@@ -1,0 +1,7 @@
+{
+  "extends": ["@vfourny/node-toolkit/tsconfig"],
+  "compilerOptions": {
+    "module": "commonjs",
+    "experimentalDecorators": true
+  }
+}
