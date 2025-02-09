@@ -14,7 +14,7 @@ async function bootstrap() {
     .setDescription('The api exemple  description')
     .setVersion('1.0')
     .addTag('Api Doc Exemple')
-      .addBearerAuth()
+    .addBearerAuth()
     .build()
   const documentFactory = () => SwaggerModule.createDocument(app, config)
   SwaggerModule.setup('api-docs', app, documentFactory)
