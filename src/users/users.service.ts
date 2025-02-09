@@ -3,7 +3,7 @@ import { PrismaService } from '../common/prisma.service'
 import { hash } from 'bcrypt'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
-import { USERs_ERROR, UserWithoutPassword } from './users.type'
+import { USERS_ERROR, UserWithoutPassword } from './users.type'
 import { User } from '@prisma/client'
 
 @Injectable()
@@ -42,7 +42,7 @@ export class UsersService {
     })
 
     if (!user) {
-      throw new NotFoundException(USERs_ERROR.NOT_FOUND_BY_ID)
+      throw new NotFoundException(USERS_ERROR.NOT_FOUND_BY_ID)
     }
     return user
   }
@@ -55,7 +55,7 @@ export class UsersService {
     })
 
     if (!user) {
-      throw new NotFoundException(USERs_ERROR.NOT_FOUND_BY_EMAIL)
+      throw new NotFoundException(USERS_ERROR.NOT_FOUND_BY_EMAIL)
     }
     return user
   }
