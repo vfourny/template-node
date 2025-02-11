@@ -6,6 +6,8 @@ on:
       - main
       - next
 
+run-name: "PR - ${{ github.event.head_commit.message }}"
+
 jobs:
   build:
     uses: vfourny/.github/.github/workflows/build.yml@main

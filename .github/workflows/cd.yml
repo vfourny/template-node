@@ -6,9 +6,11 @@ on:
     types:
       - completed
 
+run-name: "CD - ${{ github.event.workflow_run.conclusion }}"
+
 jobs:
   build:
-    if: ${{ github.event.workflow_run.workflow == 'CI' && github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     uses: vfourny/.github/.github/workflows/build.yml@main
     with:
       is_build: true
