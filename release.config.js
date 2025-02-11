@@ -1,3 +1,3 @@
 export default {
-    extends: '@vfourny/node-toolkit/release',
+  extends: '@vfourny/node-toolkit/release',
 }
