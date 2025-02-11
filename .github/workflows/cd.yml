@@ -8,6 +8,7 @@ on:
 
 jobs:
   build:
+    if: ${{ github.event.workflow_run.workflow == 'CI' && github.event.workflow_run.conclusion == 'success' }}
     uses: vfourny/.github/.github/workflows/build.yml@main
     with:
       is_build: true
@@ -25,7 +26,7 @@ jobs:
     needs: deploy_staging
     uses: vfourny/.github/.github/workflows/release.yml@main
     with:
-      is_publish: true
+      is_publish: false
       is_build: true
       environment: staging
     secrets:
