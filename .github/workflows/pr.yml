@@ -6,7 +6,7 @@ on:
       - main
       - next
 
-run-name: "PR - ${{ github.event.head_commit.message }}"
+run-name: "PR - ${{ github.event.pull_request.title }}"
 
 jobs:
   build:
