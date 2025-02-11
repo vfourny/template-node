@@ -1,22 +1,43 @@
 name: CD
 
 on:
-  push:
-    branches:
-      - main
-      - next
+  workflow_run:
+    workflows: [ CI ]
+    types:
+      - completed
 
 jobs:
   build:
     uses: vfourny/.github/.github/workflows/build.yml@main
     with:
       is_build: true
-  release:
+
+  deploy_staging:
     needs: build
+    uses: vfourny/.github/.github/workflows/deploy_railway.yml@main
+    with:
+      environment: staging
+    secrets:
+      RAILWAY_DEPLOY_TOKEN: ${{ secrets.RAILWAY_DEPLOY_TOKEN }}
+      RAILWAY_SERVICE_ID: ${{ secrets.RAILWAY_SERVICE_ID }}
+
+  release:
+    needs: deploy_staging
     uses: vfourny/.github/.github/workflows/release.yml@main
     with:
-      is_publish: false
+      is_publish: true
       is_build: true
+      environment: staging
     secrets:
       SEMANTIC_BOT_APP_ID: ${{ secrets.SEMANTIC_BOT_APP_ID }}
       SEMANTIC_BOT_PRIVATE_KEY: ${{ secrets.SEMANTIC_BOT_PRIVATE_KEY }}
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  deploy_prod:
+    needs: release
+    uses: vfourny/.github/.github/workflows/deploy_railway.yml@main
+    with:
+      environment: production
+    secrets:
+      RAILWAY_DEPLOY_TOKEN: ${{ secrets.RAILWAY_DEPLOY_TOKEN }}
+      RAILWAY_SERVICE_ID: ${{ secrets.RAILWAY_SERVICE_ID }}
