@@ -6,7 +6,7 @@ on:
     types:
       - completed
 
-run-name: "CD - ${{ github.event.workflow_run.conclusion }}"
+run-name: "CD - ${{ github.event.head_commit.message  }}"
 
 jobs:
   build:
